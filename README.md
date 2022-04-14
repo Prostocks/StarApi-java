@@ -7,7 +7,7 @@ JavaApi used to connect to Star Platform
 
 Maven project 
 
-add NorenApi-java-1.1-SNAPSHOT.jar as a dependency
+add the dependency from the 'dist' directory
 
 
 ****
