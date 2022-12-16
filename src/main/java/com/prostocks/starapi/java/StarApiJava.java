@@ -24,7 +24,7 @@ public class StarApiJava {
         JSONObject search_reply = api.search("NSE", "TCS"); 
         System.out.println(search_reply.toString());
         
-        JSONObject reply = api.place_order("B","I", "NSE", "CANBK-EQ", 1, 0, "L", 220.0, "java", null, null, null, null, null, null); 
+        JSONObject reply = api.place_order("B","I", "NSE", "CANBK-EQ", 1, 0, "LMT", 220.0, "java", null, null, null, null, null, null); 
         System.out.println(reply.toString());
         
         JSONArray book; 

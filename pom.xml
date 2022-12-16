@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.prostocks.starapi.java</groupId>
     <artifactId>StarApi-java</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0.0</version>
     <dependencies>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.kspl</groupId>
             <artifactId>norenapi</artifactId>
-            <version>1.0</version>
+            <version>2.0.0</version>
         </dependency>
     </dependencies>
     <properties>
