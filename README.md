@@ -19,6 +19,7 @@ add the dependency from the 'dist' directory
 
 Symbols
 - [searchscrip](#md-searchscrip)
+- [get_time_price_series](#md-get_time_price_series)
 
 Orders and Trades
 - [place_order](#md-place_order)
