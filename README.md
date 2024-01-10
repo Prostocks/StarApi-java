@@ -1,21 +1,22 @@
-# StarApi-java
+# NorenApi-java
 
-JavaApi used to connect to Star Platform 
+JavaApi used to connect to NorenOMS
 ****
 
 ## Build
 
 Maven project 
 
-add the dependency from the 'dist' directory
+add NorenApi-java-2.3.0.jar as a dependency
 
 
 ****
 
 ## API 
-```StarApi```
+```NorenApi```
 - [login](#md-login)
 - [logout](#md-logout)
+- [Forgot_Password_OTP](#md-forgotpasswordOTP)
 
 Symbols
 - [searchscrip](#md-searchscrip)
@@ -26,6 +27,9 @@ Orders and Trades
 - [modify_order](#md-modify_order)
 - [cancel_order](#md-cancel_order)
 
+Limits
+- [Limits](#md-limits)
+
 Example
 - [getting started](#md-example-basic)
 
@@ -33,7 +37,7 @@ Example
 connect to the broker, only once this function has returned successfully can any other operations be performed
 Example: 
 ```
-String response = api.login("MOBKUMAR", "Zxc@1234", "01-01-1970", "VENDORCODE", "secrect", "java-");
+String response = api.login("MOBKUMAR", "Zxc@1234", "01-01-1970", "IDART_DESK", "12be8cef3b1758f5", "java-");
 System.out.println(response);
 ```
 Request Details :
@@ -119,6 +123,37 @@ Sample Failure Response :
    "emsg":"Server Timeout :  "
 }
 
+#### <a name="md-forgotpasswordOTP"></a> forgot_passwordOTP(userid,pan)
+
+Request Details :
+
+|Json Fields|Possible value|Description|
+| --- | --- | ---|
+|uid*||User Id|
+|pan*||Pan of the user Or Sha256 3 times of password|
+
+Response Details :
+|Json Fields|Possible value|Description|
+| --- | --- | ---|
+|uid||User Id|
+|ReqStatus||Request status, present only when success. Value will be “OTP generation success”|
+|emsg||Error message :“Error Occurred : Wrong user id or user details”|
+
+Sample Success Response :
+```
+{
+   "uid":"user1",
+   "ReqStatus":"OTP generation success"
+}
+```
+
+Sample Failure Response :
+```
+{
+"stat":"Not_Ok",
+"emsg":"Server Timeout :   "
+}
+```
 
 #### <a name="md-place_order"></a> place_order(buy_or_sell, product_type,exchange, tradingsymbol, quantity, discloseqty, price_type, price=0.0, trigger_price=None, retention='DAY', amo='NO', remarks=None)
 place an order to oms
@@ -1865,11 +1900,422 @@ send a list of instruments to stop watch
 First configure the endpoints in the api_helper constructor. 
 Thereon provide your credentials and login as follows.
 
-```java
-      NorenApiJava api = new NorenApiJava("https://starapiuat.prostocks.com/NorenWClientTP/");
-        
-      String response = api.login("USER", "PWD", "SECOND_FACTOR", "VENDOR_CODE", "APISECRET", "java-");
-      System.out.println(response);
+```python
+from api_helper import NorenApiPy
+import logging
+
+#enable dbug to see request and responses
+logging.basicConfig(level=logging.DEBUG)
+
+#start of our program
+api = NorenApiPy()
+
+#credentials
+user        = '< user id>'
+u_pwd       = '< password >'
+factor2     = 'second factor'
+vc          = 'vendor code'
+app_key     = 'secret key'
+imei        = 'uniq identifier'
+
+
+ret = api.login(userid=user, password=pwd, twoFA=factor2, vendor_code=vc, api_secret=app_key, imei=imei)
+print(ret)
+```
+
+## <a name="md-example-market"></a> Example Symbol/Contract : Example_market.py
+This Example shows API usage for finding scrips and its properties
+
+### Search Scrips
+The call can be made to get the exchange provided token for a scrip or alternately can search for a partial string to get a list of matching scrips
+Trading Symbol:
+
+SymbolName + ExpDate + 'F' for all data having InstrumentName starting with FUT
+
+SymbolName + ExpDate + 'P' + StrikePrice for all data having InstrumentName starting with OPT and with OptionType PE
+
+SymbolName + ExpDate + 'C' + StrikePrice for all data having InstrumentName starting with OPT and with OptionType C
+
+For MCX, F to be ignored for FUT instruments
+
+```
+api.searchscrip(exchange='NSE', searchtext='REL')
+```
+This will reply as following
+```
+{
+    "stat": "Ok",
+    "values": [
+        {
+            "exch": "NSE",
+            "token": "18069",
+            "tsym": "REL100NAV-EQ"
+        },
+        {
+            "exch": "NSE",
+            "token": "24225",
+            "tsym": "RELAXO-EQ"
+        },
+        {
+            "exch": "NSE",
+            "token": "4327",
+            "tsym": "RELAXOFOOT-EQ"
+        },
+        {
+            "exch": "NSE",
+            "token": "18068",
+            "tsym": "RELBANKNAV-EQ"
+        },
+        {
+            "exch": "NSE",
+            "token": "2882",
+            "tsym": "RELCAPITAL-EQ"
+        },
+        {
+            "exch": "NSE",
+            "token": "18070",
+            "tsym": "RELCONSNAV-EQ"
+        },
+        {
+            "exch": "NSE",
+            "token": "18071",
+            "tsym": "RELDIVNAV-EQ"
+        },
+        {
+            "exch": "NSE",
+            "token": "18072",
+            "tsym": "RELGOLDNAV-EQ"
+        },
+        {
+            "exch": "NSE",
+            "token": "2885",
+            "tsym": "RELIANCE-EQ"
+        },
+        {
+            "exch": "NSE",
+            "token": "15068",
+            "tsym": "RELIGARE-EQ"
+        },
+        {
+            "exch": "NSE",
+            "token": "553",
+            "tsym": "RELINFRA-EQ"
+        },
+        {
+            "exch": "NSE",
+            "token": "18074",
+            "tsym": "RELNV20NAV-EQ"
+        }
+    ]
+}
+```
+### Security Info
+This call is done to get the properties of the scrip such as freeze qty and margins
+```
+api.get_security_info(exchange='NSE', token='22')
+```
+The response for the same would be 
+```
+{
+   "request_time": "17:43:38 31-10-2020",
+   "stat": "Ok",
+   "exch": "NSE",
+   "tsym": "ACC-EQ",
+   "cname": "ACC LIMITED",
+   "symname": "ACC",
+   "seg": "EQT",
+   "instname": "EQ",
+   "isin": "INE012A01025",
+   "pp": "2",
+   "ls": "1",
+   "ti": "0.05",
+   "mult": "1",
+   "prcftr_d": "(1 / 1 ) * (1 / 1)",
+   "trdunt": "ACC.BO",
+   "delunt": "ACC",
+   "token": "22",
+   "varmrg": "40.00"
+}
+
+```
+### Subscribe to a live feed
+Subscribe to a single token as follows
+
+```
+api.subscribe('NSE|13')
+```
+
+Subscribe to a list of tokens as follows
+```
+api.subscribe(['NSE|22', 'BSE|522032'])
+```
+
+First we need to connect to the WebSocket and then subscribe as follows
+```
+feed_opened = False
+
+def event_handler_feed_update(tick_data):
+    print(f"feed update {tick_data}")
+
+def open_callback():
+    global feed_opened
+    feed_opened = True
+
+
+api.start_websocket( order_update_callback=event_handler_order_update,
+                     subscribe_callback=event_handler_feed_update, 
+                     socket_open_callback=open_callback)
+
+while(feed_opened==False):
+    pass
+
+# subscribe to a single token 
+api.subscribe('NSE|13')
+
+#subscribe to multiple tokens
+api.subscribe(['NSE|22', 'BSE|522032'])
+```
+## <a name="md-example-orders"></a> Example - Orders and Trades : example_orders.py
+### Place Order
+    Place a Limit order as follows
+```
+    api.place_order(buy_or_sell='B', product_type='C',
+                        exchange='NSE', tradingsymbol='INFY-EQ', 
+                        quantity=1, discloseqty=0,price_type='LMT', price=1500, trigger_price=None,
+                        retention='DAY', remarks='my_order_001')
+```
+    Place a Market Order as follows
+```
+    api.place_order(buy_or_sell='B', product_type='C',
+                        exchange='NSE', tradingsymbol='INFY-EQ', 
+                        quantity=1, discloseqty=0,price_type='MKT', price=0, trigger_price=None,
+                        retention='DAY', remarks='my_order_001')
+```
+    Place a StopLoss Order as follows
+```
+    api.place_order(buy_or_sell='B', product_type='C',
+                        exchange='NSE', tradingsymbol='INFY-EQ', 
+                        quantity=1, discloseqty=0,price_type='SL-LMT', price=1500, trigger_price=1450,
+                        retention='DAY', remarks='my_order_001')
+```
+    Place a Cover Order as follows
+```
+    api.place_order(buy_or_sell='B', product_type='H',
+                        exchange='NSE', tradingsymbol='INFY-EQ', 
+                        quantity=1, discloseqty=0,price_type='LMT', price=1500, trigger_price=None,
+                        retention='DAY', remarks='my_order_001', bookloss_price = 1490)
+```
+    Place a Bracket Order as follows
+```
+    api.place_order(buy_or_sell='B', product_type='B',
+                        exchange='NSE', tradingsymbol='INFY-EQ', 
+                        quantity=1, discloseqty=0,price_type='LMT', price=1500, trigger_price=None,
+                        retention='DAY', remarks='my_order_001', bookloss_price = 1490, bookprofit_price = 1510)
+```
+### Modify Order
+    Modify a New Order by providing the OrderNumber
+```
+    api.modify_order(exchange='NSE', tradingsymbol='INFY-EQ', orderno=orderno,
+                                   newquantity=2, newprice_type='LMT', newprice=1505)
+```
+### Cancel Order
+    Cancel a New Order by providing the Order Number
+```
+    api.cancel_order(orderno=orderno)
+```
+#### <a name="md-limits"></a> Limits
+
+
+
+```
+   JSONObject get_limits = api.get_limits("NIKHESHP", "NIKHESHP"); 
+```
+
+Request Details :
+
+|Json Fields|Possible value|Description|
+| --- | --- | ---|
+|uid*||Logged in User Id|
+|actid*||Account id of the logged in user|
+
+Response Details :
+
+| Param | Type | Optional |Description |
+| --- | --- | --- | ---|
+|stat|Ok or Not_Ok| False |Limits request success or failure indication.|
+|actid| ```string``` | True |Account id|
+|prd| ```string``` | True |Product name|
+|seg| ```string``` | True |Segment CM / FO / FX |
+|exch| ```string``` | True |Exchange|
+|-------------------------Cash Primary Fields-------------------------------|
+|cash| ```string``` | True |Cash Margin available|
+|payin| ```string``` | True |Total Amount transferred using Payins today |
+|payout| ```string``` | True |Total amount requested for withdrawal today|
+|-------------------------Cash Additional Fields-------------------------------|
+|brkcollamt| ```string``` | True |Prevalued Collateral Amount|
+|unclearedcash| ```string``` | True |Uncleared Cash (Payin through cheques)|
+|daycash| ```string``` | True |Additional leverage amount / Amount added to handle system errors - by broker.  |
+|-------------------------Margin Utilized----------------------------------|
+|marginused| ```string``` | True |Total margin / fund used today|
+|mtomcurper| ```string``` | True |Mtom current percentage|
+|-------------------------Margin Used components---------------------|
+|cbu| ```string``` | True |CAC Buy used|
+|csc| ```string``` | True |CAC Sell Credits|
+|rpnl| ```string``` | True |Current realized PNL|
+|unmtom| ```string``` | True |Current unrealized mtom|
+|marprt| ```string``` | True |Covered Product margins|
+|span| ```string``` | True |Span used|
+|expo| ```string``` | True |Exposure margin|
+|premium| ```string``` | True |Premium used|
+|varelm| ```string``` | True |Var Elm Margin|
+|grexpo| ```string``` | True |Gross Exposure|
+|greexpo_d| ```string``` | True |Gross Exposure derivative|
+|scripbskmar| ```string``` | True |Scrip basket margin|
+|addscripbskmrg| ```string``` | True |Additional scrip basket margin|
+|brokerage| ```string``` | True |Brokerage amount|
+|collateral| ```string``` | True |Collateral calculated based on uploaded holdings|
+|grcoll| ```string``` | True |Valuation of uploaded holding pre haircut|
+|-------------------------Additional Risk Limits---------------------------|
+|turnoverlmt| ```string``` | True ||
+|pendordvallmt| ```string``` | True ||
+|-------------------------Additional Risk Indicators---------------------------|
+|turnover| ```string``` | True |Turnover|
+|pendordval| ```string``` | True |Pending Order value|
+|-------------------------Margin used detailed breakup fields-------------------------|
+|rzpnl_e_i| ```string``` | True |Current realized PNL (Equity Intraday)|
+|rzpnl_e_m| ```string``` | True |Current realized PNL (Equity Margin)|
+|rzpnl_e_c| ```string``` | True |Current realized PNL (Equity Cash n Carry)|
+|rzpnl_d_i| ```string``` | True |Current realized PNL (Derivative Intraday)|
+|rzpnl_d_m| ```string``` | True |Current realized PNL (Derivative Margin)|
+|rzpnl_f_i| ```string``` | True |Current realized PNL (FX Intraday)|
+|rzpnl_f_m| ```string``` | True |Current realized PNL (FX Margin)|
+|rzpnl_c_i| ```string``` | True |Current realized PNL (Commodity Intraday)|
+|rzpnl_c_m| ```string``` | True |Current realized PNL (Commodity Margin)|
+|uzpnl_e_i| ```string``` | True |Current unrealized MTOM (Equity Intraday)|
+|uzpnl_e_m| ```string``` | True |Current unrealized MTOM (Equity Margin)|
+|uzpnl_e_c| ```string``` | True |Current unrealized MTOM (Equity Cash n Carry)|
+|uzpnl_d_i| ```string``` | True |Current unrealized MTOM (Derivative Intraday)|
+|uzpnl_d_m| ```string``` | True |Current unrealized MTOM (Derivative Margin)|
+|uzpnl_f_i| ```string``` | True |Current unrealized MTOM (FX Intraday)|
+|uzpnl_f_m| ```string``` | True |Current unrealized MTOM (FX Margin)|
+|uzpnl_c_i| ```string``` | True |Current unrealized MTOM (Commodity Intraday)|
+|uzpnl_c_m| ```string``` | True |Current unrealized MTOM (Commodity Margin)|
+|span_d_i| ```string``` | True |Span Margin (Derivative Intraday)|
+|span_d_m| ```string``` | True |Span Margin (Derivative Margin)|
+|span_f_i| ```string``` | True |Span Margin (FX Intraday)|
+|span_f_m| ```string``` | True |Span Margin (FX Margin)|
+|span_c_i| ```string``` | True |Span Margin (Commodity Intraday)|
+|span_c_m| ```string``` | True |Span Margin (Commodity Margin)|
+|expo_d_i| ```string``` | True |Exposure Margin (Derivative Intraday)|
+|expo_d_m| ```string``` | True |Exposure Margin (Derivative Margin)|
+|expo_f_i| ```string``` | True |Exposure Margin (FX Intraday)|
+|expo_f_m| ```string``` | True |Exposure Margin (FX Margin)|
+|expo_c_i| ```string``` | True |Exposure Margin (Commodity Intraday)|
+|expo_c_m| ```string``` | True |Exposure Margin (Commodity Margin)|
+|premium_d_i| ```string``` | True |Option premium (Derivative Intraday)|
+|premium_d_m| ```string``` | True |Option premium (Derivative Margin)|
+|premium_f_i| ```string``` | True |Option premium (FX Intraday)|
+|premium_f_m| ```string``` | True |Option premium (FX Margin)|
+|premium_c_i| ```string``` | True |Option premium (Commodity Intraday)|
+|premium_c_m| ```string``` | True |Option premium (Commodity Margin)|
+|varelm_e_i| ```string``` | True |Var Elm (Equity Intraday)|
+|varelm_e_m| ```string``` | True |Var Elm (Equity Margin)|
+|varelm_e_c| ```string``` | True |Var Elm (Equity Cash n Carry)|
+|marprt_e_h| ```string``` | True |Covered Product margins (Equity High leverage)|
+|marprt_e_b| ```string``` | True |Covered Product margins (Equity Bracket Order)|
+|marprt_d_h| ```string``` | True |Covered Product margins (Derivative High leverage)|
+|marprt_d_b| ```string``` | True |Covered Product margins (Derivative Bracket Order)|
+|marprt_f_h| ```string``` | True |Covered Product margins (FX High leverage)|
+|marprt_f_b| ```string``` | True |Covered Product margins (FX Bracket Order)|
+|marprt_c_h| ```string``` | True |Covered Product margins (Commodity High leverage)|
+|marprt_c_b| ```string``` | True |Covered Product margins (Commodity Bracket Order)|
+|scripbskmar_e_i| ```string``` | True |Scrip basket margin (Equity Intraday)|
+|scripbskmar_e_m| ```string``` | True |Scrip basket margin (Equity Margin)|
+|scripbskmar_e_c| ```string``` | True |Scrip basket margin (Equity Cash n Carry)|
+|addscripbskmrg_d_i| ```string``` | True |Additional scrip basket margin (Derivative Intraday)|
+|addscripbskmrg_d_m| ```string``` | True |Additional scrip basket margin (Derivative Margin)|
+|addscripbskmrg_f_i| ```string``` | True |Additional scrip basket margin (FX Intraday)|
+|addscripbskmrg_f_m| ```string``` | True |Additional scrip basket margin (FX Margin)|
+|addscripbskmrg_c_i| ```string``` | True |Additional scrip basket margin (Commodity Intraday)|
+|addscripbskmrg_c_m| ```string``` | True |Additional scrip basket margin (Commodity Margin)|
+|brkage_e_i| ```string``` | True |Brokerage (Equity Intraday)|
+|brkage_e_m| ```string``` | True |Brokerage (Equity Margin)|
+|brkage_e_c| ```string``` | True |Brokerage (Equity CAC)|
+|brkage_e_h| ```string``` | True |Brokerage (Equity High Leverage)|
+|brkage_e_b| ```string``` | True |Brokerage (Equity Bracket Order)|
+|brkage_d_i| ```string``` | True |Brokerage (Derivative Intraday)|
+|brkage_d_m| ```string``` | True |Brokerage (Derivative Margin)|
+|brkage_d_h| ```string``` | True |Brokerage (Derivative High Leverage)|
+|brkage_d_b| ```string``` | True |Brokerage (Derivative Bracket Order)|
+|brkage_f_i| ```string``` | True |Brokerage (FX Intraday)|
+|brkage_f_m| ```string``` | True |Brokerage (FX Margin)|
+|brkage_f_h| ```string``` | True |Brokerage (FX High Leverage)|
+|brkage_f_b| ```string``` | True |Brokerage (FX Bracket Order)|
+|brkage_c_i| ```string``` | True |Brokerage (Commodity Intraday)|
+|brkage_c_m| ```string``` | True |Brokerage (Commodity Margin)|
+|brkage_c_h| ```string``` | True |Brokerage (Commodity High Leverage)|
+|brkage_c_b| ```string``` | True |Brokerage (Commodity Bracket Order)|
+|peak_mar| ```string``` | True |Peak margin used by the client|
+|request_time| ```string``` | True |This will be present only in a successful response.|
+|emsg| ```string``` | True |This will be present only in a failure response.|
+
+### Sample Success Response :
+```
+{
+    "request_time":"18:07:31 29-05-2020",
+"stat":"Ok",
+"cash":"1500000000000000.00",
+"payin":"0.00",
+"payout":"0.00",
+"brkcollamt":"0.00",
+"unclearedcash":"0.00",
+"daycash":"0.00",
+"turnoverlmt":"50000000000000.00",
+"pendordvallmt":"2000000000000000.00",
+"turnover":"3915000.00",
+"pendordval":"2871000.00",
+"marginused":"3945540.00",
+"mtomcurper":"0.00",
+"urmtom":"30540.00",
+"grexpo":"3915000.00",
+"uzpnl_e_i":"15270.00",
+"uzpnl_e_m":"61080.00",
+"uzpnl_e_c":"-45810.00"
+}
+```
+###  Sample Failure Response :
+```
+{
+   "stat":"Not_Ok",
+   "emsg":"Server Timeout :  "
+}
+```
+
+
+### Subscribe to Order Updates
+
+Connecting to the Websocket will automatically subscribe and provide the order updates in the call back as follows
+Note: Feed and Order updates are received from the same websocket and needs to be connected once only.
+
+```
+feed_opened = False
+
+def event_handler_order_update(order):
+    print(f"order feed {order}")
+
+def open_callback():
+    global feed_opened
+    feed_opened = True
+
+
+api.start_websocket( order_update_callback=event_handler_order_update,
+                     subscribe_callback=event_handler_feed_update, 
+                     socket_open_callback=open_callback)
+
+while(feed_opened==False):
+    pass
+
+
 ```
 
 ****
