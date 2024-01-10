@@ -28,6 +28,12 @@ public class StarApiJava {
         JSONObject search_reply = api.search("NSE", "TCS"); 
         System.out.println(search_reply.toString());
         
+        JSONObject forgotpassword_OTP = api.forgotpassword_OTP("NIKHESHP", "AAAAA1234A"); 
+        System.out.println(forgotpassword_OTP.toString());
+        
+        JSONObject get_limits = api.get_limits("NIKHESHP", "NIKHESHP"); 
+        System.out.println(get_limits.toString());
+        
         JSONObject reply = api.place_order("B","I", "NSE", "CANBK-EQ", 1, 0, "LMT", 220.0, "java", null, null, null, null, null, null); 
         System.out.println(reply.toString());
         
