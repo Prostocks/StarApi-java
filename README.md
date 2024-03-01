@@ -7,7 +7,7 @@ JavaApi used to connect to NorenOMS
 
 Maven project 
 
-add NorenApi-java-2.4.0.jar as a dependency
+add NorenApi-java-2.5.0.jar as a dependency
 
 
 ****
