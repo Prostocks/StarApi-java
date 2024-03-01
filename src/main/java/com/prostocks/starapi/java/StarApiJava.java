@@ -41,6 +41,10 @@ public class StarApiJava {
         book = api.get_order_book();
         System.out.println(book.toString());
         
+        book = api.get_position_book();
+        if(book != null)
+            System.out.println(book.toString());
+        
         book = api.get_trade_book(); 
         if(book != null)
             System.out.println(book.toString());
