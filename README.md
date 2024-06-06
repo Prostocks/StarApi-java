@@ -21,6 +21,7 @@ add NorenApi-java-2.5.0.jar as a dependency
 Symbols
 - [searchscrip](#md-searchscrip)
 - [get_time_price_series](#md-get_time_price_series)
+- [get_quotes](#md-get_quotes)
 
 Orders and Trades
 - [place_order](#md-place_order)
@@ -1466,15 +1467,8 @@ Sample Failure Response :
     "emsg":"Error Occurred : 5 \"no data\""
 }
 
-#### <a name="md-get_quotes"></a> get_quotes(exchange, token):
+#### <a name="md-get_quotes"></a> get_quotes(uid,exchange, token):
 gets the complete details and its properties 
-
-Example: 
-```
-exch  = 'NSE'
-token = '22'
-ret = api.get_quotes(exchange=exch, token=token)
-```
 
 Request Details :
 
@@ -1729,6 +1723,144 @@ Sample Failure Response :
 {
      "stat":"Not_Ok",
      "emsg":"Session Expired : Invalid Session Key"
+}
+
+
+#### <a name="md-get_quotes"></a> get_quotes(uid,exchange, token):
+gets the complete details and its properties 
+
+Request Details :
+
+|Json Fields|Possible value|Description|
+| --- | --- | ---|
+|uid*||Logged in User Id|
+|exch||Exchange |
+|token||Contract Token|
+
+Response Details :
+
+Response data will be in json format with below fields.
+
+|Json Fields|Possible value|Description|
+| --- | --- | ---|
+|stat|Ok or Not_Ok|Watch list update success or failure indication.|
+|request_time||It will be present only in a successful response.|
+|exch|NSE, BSE, NFO ...|Exchange |
+|tsym||Trading Symbol|
+|cname||Company Name|
+|symname||Symbol Name|
+|seg||Segment|
+|instname||Instrument Name|
+|isin||ISIN|
+|pp||Price precision|
+|ls||Lot Size |
+|ti||Tick Size |
+|mult||Multiplier|
+|uc||Upper circuit limitlc|
+|lc||Lower circuit limit|
+|prcftr_d||Price factor|((GN / GD) * (PN/PD))|
+|token||Token|
+|lp||LTP|
+|o||Open Price|
+|h||Day High Price|
+|l||Day Low Price|
+|v||Volume|
+|ltq||Last trade quantity|
+|ltt||Last trade time|
+|bp1||Best Buy Price 1|
+|sp1||Best Sell Price 1|
+|bp2||Best Buy Price 2|
+|sp2||Best Sell Price 2|
+|bp3||Best Buy Price 3|
+|sp3||Best Sell Price 3|
+|bp4||Best Buy Price 4|
+|sp4||Best Sell Price 4|
+|bp5||Best Buy Price 5|
+|sp5||Best Sell Price 5|
+|bq1||Best Buy Quantity 1|
+|sq1||Best Sell Quantity 1|
+|bq2||Best Buy Quantity 2|
+|sq2||Best Sell Quantity 2|
+|bq3||Best Buy Quantity 3|
+|sq3||Best Sell Quantity 3|
+|bq4||Best Buy Quantity 4|
+|sq4||Best Sell Quantity 4|
+|bq5||Best Buy Quantity 5|
+|sq5||Best Sell Quantity 5|
+|bo1||Best Buy Orders 1|
+|so1||Best Sell Orders 1|
+|bo2||Best Buy Orders 2|
+|so2||Best Sell Orders 2|
+|bo3||Best Buy Orders 3|
+|so3||Best Sell Orders 3|
+|bo4||Best Buy Orders 4|
+|so4||Best Sell Orders 4|
+|bo5||Best Buy Orders 5|
+|so5||Best Sell Orders 5|
+
+
+Sample Success Response :
+{
+    "request_time":"12:05:21 18-05-2021",
+"stat":"Ok"
+,"exch":"NSE",
+"tsym":"ACC-EQ",
+"cname":"ACC LIMITED",
+"symname":"ACC",
+"seg":"EQT",
+"instname":"EQ",
+"isin":"INE012A01025",
+"pp":"2",
+"ls":"1",
+"ti":"0.05",
+"mult":"1",
+"uc":"2093.95",
+"lc":"1713.25",
+"prcftr_d":"(1 / 1 ) * (1 / 1)",
+"token":"22",
+"lp":"0.00",
+"h":"0.00",
+"l":"0.00",
+"v":"0",
+"ltq":"0",
+"ltt":"05:30:00",
+"bp1":"2000.00",
+"sp1":"0.00",
+"bp2":"0.00",
+"sp2":"0.00",
+"bp3":"0.00",
+"sp3":"0.00",
+"bp4":"0.00",
+"sp4":"0.00",
+"bp5":"0.00",
+"sp5":"0.00",
+"bq1":"2",
+"sq1":"0",
+"bq2":"0",
+"sq2":"0",
+"bq3":"0",
+"sq3":"0",
+"bq4":"0",
+"sq4":"0",
+"bq5":"0",
+"sq5":"0",
+"bo1":"2",
+"so1":"0",
+"bo2":"0",
+"so2":"0",
+"bo3":"0",
+"so3":"0",
+"bo4":"0",
+"so4":"0",
+"bo5":"0",
+"So5":"0"
+}
+
+Sample Failure Response :
+{
+    "stat":"Not_Ok",
+    "request_time":"10:50:54 10-12-2020",
+    "emsg":"Error Occurred : 5 \"no data\""
 }
 
 
