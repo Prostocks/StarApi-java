@@ -30,7 +30,10 @@ public class StarApiJava {
         
         JSONObject forgotpassword_OTP = api.forgotpassword_OTP("NIKHESHP", "AAAAA1234A"); 
         System.out.println(forgotpassword_OTP.toString());
-        
+
+        JSONObject get_quotes = api.get_quotes("NIKHESHP", "NSE","22"); 
+        System.out.println(get_quotes.toString()); 
+                
         JSONObject get_limits = api.get_limits("NIKHESHP", "NIKHESHP"); 
         System.out.println(get_limits.toString());
         
