@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.ZoneOffset;
+import com.prostocks.starapi.java.ExampleCallback;
 
 /**
  *
@@ -20,8 +21,7 @@ public class StarApiJava {
 
     public static void main(String[] args) {
         System.out.println("Hello and Welcome to StarApi-Java!");
-        NorenApiJava api = new NorenApiJava("https://starapiuat.prostocks.com/NorenWClientTP/");
-        
+        NorenApiJava api = new NorenApiJava("https://starapiuat.prostocks.com/NorenWClientTP/","ws://kurma.kambala.co.in:9657/NorenWS/");
         String response = api.login("USER", "PWD", "SECOND_FACTOR", "VENDOR_CODE", "APISECRET", "java-");
         System.out.println(response);
             
@@ -71,7 +71,24 @@ public class StarApiJava {
            System.out.println("The time difference is :" + (System.currentTimeMillis()-starttime) );
             if(ret1 != null)
            System.out.println(ret1.toString());
+        ExampleCallback appcallback=new ExampleCallback();    
+        api.startwebsocket(appcallback);
+        api.subscribe("NSE|22");
+        try {
+                Thread.sleep(10000);  // Sleep for 2 seconds
+            } catch (InterruptedException e) {
+                System.err.println("Thread was interrupted: " + e.getMessage());
+                e.printStackTrace();
+            }
+        api.unsubscribe("NSE|22");
+        while(true){
+            try {
+            Thread.sleep(2000); // sleep for 2 seconds
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        }        
+    } 
 
-            }    
     }
 }
