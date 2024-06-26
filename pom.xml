@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.prostocks.starapi.java</groupId>
-    <artifactId>StarApi-java</artifactId>
-    <version>2.0.0</version>
+    <groupId>com.kspl.norenexampleapp</groupId>
+    <artifactId>NorenExampleApp</artifactId>
+    <version>1.1.0</version>
     <dependencies>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
@@ -11,20 +11,15 @@
             <version>4.9.3</version>
         </dependency>
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20171018</version>
-        </dependency>
-        <dependency>
-            <groupId>com.kspl</groupId>
-            <artifactId>norenapi</artifactId>
-            <version>2.6.0</version>
+            <groupId>com.noren.javaapi</groupId>
+            <artifactId>NorenApi-java</artifactId>
+            <version>2.7.0</version>
         </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>18</maven.compiler.source>
-        <maven.compiler.target>18</maven.compiler.target>
-        <exec.mainClass>com.prostocks.starapi.java.StarApiJava</exec.mainClass>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <exec.mainClass>com.kspl.norenexampleapp.NorenExampleApp</exec.mainClass>
     </properties>
 </project>
